@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:good_start/src/pages/authentication/authentication_page_bloc.dart';
+// import 'package:good_start/src/pages/authentication/authentication_page_bloc.dart';
 import 'package:good_start/src/pages/login/login_page.dart';
-import 'package:good_start/src/pages/register/register_page.dart';
-import 'package:good_start/src/shared/components/fullwidth_border_button.dart';
-import 'package:good_start/src/shared/components/fullwidth_button.dart';
+// import 'package:good_start/src/pages/register/register_page.dart';
+// import 'package:good_start/src/shared/components/fullwidth_border_button.dart';
+// import 'package:good_start/src/shared/components/fullwidth_button.dart';
 import 'package:good_start/src/shared/styles/style.dart';
 
 class AuthenticationPage extends StatefulWidget {
@@ -12,11 +12,11 @@ class AuthenticationPage extends StatefulWidget {
 }
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
-  AuthenticationPageBloc bloc = AuthenticationPageBloc();
+  // AuthenticationPageBloc bloc = AuthenticationPageBloc();
 
   @override
   void dispose() {
-    bloc.dispose();
+    // bloc.dispose();
     super.dispose();
   }
 
@@ -28,10 +28,11 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
         color: Colors.purple
       ),
       child: PageView(
-        controller: bloc.pageController,
+        // controller: bloc.pageController,
         children: <Widget>[
-          RegisterPage(),
-          AuthenticationHome(bloc: bloc),
+          // RegisterPage(),
+          // AuthenticationHome(bloc: bloc),
+          AuthenticationHome(),
           LoginPage()
         ],
       ),
@@ -42,10 +43,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 class AuthenticationHome extends StatelessWidget {
   const AuthenticationHome({
     Key key,
-    @required this.bloc,
+    // @required this.bloc,
   }) : super(key: key);
 
-  final AuthenticationPageBloc bloc;
+  // final AuthenticationPageBloc bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -76,29 +77,29 @@ class AuthenticationHome extends StatelessWidget {
               ),
               Column(
                 children: <Widget>[
-                  FullwidthBorderButton(
-                    color: Colors.white,
-                    child: Text("REGISTRAR",
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
-                    onPressed: () {
-                      bloc.pageController.animateToPage(0,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeOut);
-                    },
-                  ),
+                  // FullwidthBorderButton(
+                  //   color: Colors.white,
+                  //   child: Text("REGISTRAR",
+                  //       style: TextStyle(color: Colors.white, fontSize: 18)),
+                  //   onPressed: () {
+                  //     bloc.pageController.animateToPage(0,
+                  //         duration: Duration(milliseconds: 300),
+                  //         curve: Curves.easeOut);
+                  //   },
+                  // ),
                   SizedBox(
                     height: 20,
                   ),
-                  FullwidthButton(
-                    color: Colors.white,
-                    onPressed: () {
-                      bloc.pageController.animateToPage(2,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeOut);
-                    },
-                    child: Text("LOGIN",
-                        style: TextStyle(color: Colors.red, fontSize: 18)),
-                  ),
+                  // FullwidthButton(
+                  //   color: Colors.white,
+                  //   onPressed: () {
+                  //     bloc.pageController.animateToPage(2,
+                  //         duration: Duration(milliseconds: 300),
+                  //         curve: Curves.easeOut);
+                  //   },
+                  //   child: Text("LOGIN",
+                  //       style: TextStyle(color: Colors.red, fontSize: 18)),
+                  // ),
                 ],
               ),
             ],

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:good_start/src/pages/home/home_page.dart';
-import 'package:good_start/src/pages/login/login_bloc.dart';
-import 'package:good_start/src/shared/components/fullwidth_border_button.dart';
-import 'package:good_start/src/shared/components/fullwidth_button.dart';
+// import 'package:good_start/src/pages/login/login_bloc.dart';
+// import 'package:good_start/src/shared/components/fullwidth_border_button.dart';
+// import 'package:good_start/src/shared/components/fullwidth_button.dart';
 import 'package:good_start/src/shared/styles/style.dart';
 import 'package:hasura_connect/hasura_connect.dart';
 
@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  LoginBloc bloc = LoginBloc();
+  // LoginBloc bloc = LoginBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 40),
           child: Form(
             autovalidate: true,
-            key: bloc.formKey,
+            // key: bloc.formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,17 +50,17 @@ class _LoginPageState extends State<LoginPage> {
                       hintText: "********", border: UnderlineInputBorder()),
                 ),
                 SizedBox(height: 60),
-                FullwidthButton(
-                  color: Colors.red,
-                  onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
-                    if (bloc.formKey.currentState.validate()) {
-                      bloc.formKey.currentState.save();
-                    }
-                  },
-                  child: Text("LOGIN",
-                      style: TextStyle(color: Colors.white, fontSize: 18)),
-                ),
+                // FullwidthButton(
+                //   color: Colors.red,
+                //   onPressed: () {
+                //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
+                //     if (bloc.formKey.currentState.validate()) {
+                //       bloc.formKey.currentState.save();
+                //     }
+                //   },
+                //   child: Text("LOGIN",
+                //       style: TextStyle(color: Colors.white, fontSize: 18)),
+                // ),
               ],
             ),
           ),
