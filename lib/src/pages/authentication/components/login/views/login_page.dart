@@ -89,7 +89,13 @@ class _LoginPageState extends State<LoginPage> {
                 Text("Email", style: authenticationLabel),
                 TextFormField(
                   onSaved: (email) {
-                    loginStore.email = email;
+                    loginStore.email = email.trim();
+                  },
+                  validator: (email){
+                    if (RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?").hasMatch(email))
+                      return null;
+                    else
+                      return "Por favor, insira um email válido";
                   },
                   decoration: InputDecoration(
                       hintText: "goodstart@gmail.com.br",
@@ -105,6 +111,11 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: true,
                   onSaved: (password) {
                     loginStore.password = password;
+                  },
+                  validator: (password){
+                    if (password.length < 4)
+                      return "Por favor, digite uma senha com mais de 4 caracteres";
+                    return null;
                   },
                   decoration: InputDecoration(
                       hintStyle: TextStyle(color: Colors.grey),

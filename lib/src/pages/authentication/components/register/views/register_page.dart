@@ -31,8 +31,8 @@ class _RegisterPageState extends State<RegisterPage> {
         var registerResponse;
         authBloc.addUser(registerResponse.value.user);
         authBloc.dispose();
-        // Navigator.pushReplacement(
-        //     context, MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
       }
       if (registerStore.registerResponse.status == FutureStatus.rejected)
         showDialog(
@@ -87,10 +87,15 @@ class _RegisterPageState extends State<RegisterPage> {
               SizedBox(
                 height: 50,
               ),
-              Text("Name", style: authenticationLabel),
+              Text("Nome", style: authenticationLabel),
               TextFormField(
                 onSaved: (name) {
-                  registerStore.name = name;
+                  registerStore.name = name.trim();
+                },
+                validator: (name) {
+                  if (name.length < 3)
+                    return "Por favor, insira um nome com mais de três caracteres.";
+                  return null;
                 },
                 decoration: InputDecoration(
                     hintText: "OliviaOliveira",
@@ -101,7 +106,15 @@ class _RegisterPageState extends State<RegisterPage> {
               Text("Email", style: authenticationLabel),
               TextFormField(
                 onSaved: (email) {
-                  registerStore.email = email;
+                  registerStore.email = email.trim();
+                },
+                validator: (email) {
+                  if (RegExp(
+                          r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                      .hasMatch(email))
+                    return null;
+                  else
+                    return "Por favor, insira um email válido";
                 },
                 decoration: InputDecoration(
                     hintText: "goodstart@gmail.com.br",
@@ -117,6 +130,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscureText: true,
                 onSaved: (password) {
                   registerStore.password = password;
+                },
+                validator: (password) {
+                  if (password.length < 4)
+                    return "Por favor, digite uma senha com mais de 4 caracteres";
+                  return null;
                 },
                 decoration: InputDecoration(
                     hintStyle: TextStyle(color: Colors.grey),

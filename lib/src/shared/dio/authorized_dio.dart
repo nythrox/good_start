@@ -8,7 +8,7 @@ class AuthorizedDio implements ICustomDio{
   
   final _dio = Dio();
 
-  String get authUrl => "https://706ba35c.ngrok.io/";
+  String get authUrl => "http://95d89208.ngrok.io/";
 
   String get hasuraUrl => "https://good-start.herokuapp.com/v1/graphql";
 
