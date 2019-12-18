@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:good_start/src/pages/authentication/components/login/blocs/login_store.dart';
 import 'package:good_start/src/pages/authentication/components/login/models/login_dto.dart';
+import 'package:good_start/src/pages/authentication/exceptions/auth_exceptions.dart';
 import 'package:good_start/src/pages/authentication/repositories/authentication_repository.dart';
 import 'package:good_start/src/pages/home/home_page.dart';
 import 'package:good_start/src/shared/bloc/auth_bloc.dart';
@@ -28,15 +29,9 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _disposer = autorun((_) async {
+    _disposer = autorun((_) {
       if (_loginStore.loginResponse.status == FutureStatus.fulfilled) {
-        final authBloc = AuthBloc();
-        authBloc.addUser(_loginStore.loginResponse.value.user);
-        authBloc.addAccessToken(_loginStore.loginResponse.value.accessToken);
-        authBloc.addRefreshToken(_loginStore.loginResponse.value.refreshToken);
-        authBloc.dispose();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+        onSuccess();
       }
       if (_loginStore.loginResponse.status == FutureStatus.rejected)
         showDialog(
@@ -44,10 +39,13 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context) {
               String text =
                   "An unexpected error has occured. Please try again.";
-              if ((_loginStore.loginResponse.error as DioError)
-                      .response
-                      .statusCode ==
-                  400) text = "Email or password incorrect. Please try again.";
+              if (_loginStore.loginResponse.error is AuthException)
+                text =
+                    (_loginStore.loginResponse.error as AuthException).message;
+              // if ((_loginStore.loginResponse.error as DioError)
+              //         .response
+              //         .statusCode ==
+              //     400) text = "Email or password incorrect. Please try again.";
               return AlertDialog(
                 title: Text("Error"),
                 content: Text(text),
@@ -63,6 +61,16 @@ class _LoginPageState extends State<LoginPage> {
               );
             });
     });
+  }
+
+  void onSuccess() async {
+    final authBloc = AuthBloc();
+    await authBloc.addUser(_loginStore.loginResponse.value.user);
+    await authBloc.addAccessToken(_loginStore.loginResponse.value.accessToken);
+    await authBloc
+        .addRefreshToken(_loginStore.loginResponse.value.refreshToken);
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   @override
@@ -100,8 +108,10 @@ class _LoginPageState extends State<LoginPage> {
                   onSaved: (email) {
                     _loginStore.email = email.trim();
                   },
-                  validator: (email){
-                    if (RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?").hasMatch(email))
+                  validator: (email) {
+                    if (RegExp(
+                            r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                        .hasMatch(email))
                       return null;
                     else
                       return "Por favor, insira um email válido";
@@ -121,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                   onSaved: (password) {
                     _loginStore.password = password;
                   },
-                  validator: (password){
+                  validator: (password) {
                     if (password.length < 4)
                       return "Por favor, digite uma senha com mais de 4 caracteres";
                     return null;
@@ -154,20 +164,24 @@ class _LoginPageState extends State<LoginPage> {
                   child: Text("LOGIN",
                       style: TextStyle(color: Colors.white, fontSize: 18)),
                 ),
-                SizedBox(height: 10,),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Button(
                         width: MediaQuery.of(context).size.width * 0.4,
                         color: Colors.red,
-                        child: Text("Google",style: TextStyle(color: Colors.white)),
+                        child: Text("Google",
+                            style: TextStyle(color: Colors.white)),
                         borderRadius: 15,
                         onPressed: () {}),
                     Button(
                         width: MediaQuery.of(context).size.width * 0.4,
                         color: Colors.blue,
-                        child: Text("Facebook",style: TextStyle(color: Colors.white)),
+                        child: Text("Facebook",
+                            style: TextStyle(color: Colors.white)),
                         borderRadius: 15,
                         onPressed: () {}),
                   ],

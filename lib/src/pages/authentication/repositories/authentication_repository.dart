@@ -19,6 +19,10 @@ class AuthenticationRepository {
           data: {"email": loginDto.email, "password": loginDto.password});
       return AuthResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioError && e.response.statusCode == 404)
+        throw AuthException(e.response.data["message"].toString());
+      if (e is DioError && e.response.statusCode == 401)
+        throw AuthException("Password is incorrect");
       rethrow;
     }
   }

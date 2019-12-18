@@ -27,14 +27,9 @@ class _RegisterPageState extends State<RegisterPage> {
   void initState() {
     super.initState();
     _disposer = autorun((_) {
+      print(_registerStore.registerResponse.status);
       if (_registerStore.registerResponse.status == FutureStatus.fulfilled) {
-        final authBloc = AuthBloc();
-        authBloc.addUser(_registerStore.registerResponse.value.user);
-        authBloc.addAccessToken(_registerStore.registerResponse.value.accessToken);
-        authBloc.addRefreshToken(_registerStore.registerResponse.value.refreshToken);
-        authBloc.dispose();
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+        onSuccess();
       }
       if (_registerStore.registerResponse.status == FutureStatus.rejected)
         showDialog(
@@ -60,6 +55,16 @@ class _RegisterPageState extends State<RegisterPage> {
               );
             });
     });
+  }
+
+  void onSuccess() async {
+    final authBloc = AuthBloc();
+    await authBloc.addUser(_registerStore.registerResponse.value.user);
+    await authBloc.addAccessToken(_registerStore.registerResponse.value.accessToken);
+    await authBloc
+        .addRefreshToken(_registerStore.registerResponse.value.refreshToken);
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   @override

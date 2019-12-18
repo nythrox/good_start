@@ -4,65 +4,60 @@ import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart';
 
 class AuthBloc {
-
   final user$ = BehaviorSubject<User>();
 
-  Box<User> _currentUserBox;
-  Box<String> _accessTokenBox;
-  Box<String> _refreshTokenBox;
-  Stream<BoxEvent> _currentUserBoxStream;
-
+  Future<Box<User>> _currentUserBox = Hive.openBox(CurrentUserBox);
+  Future<Box<String>> _accessTokenBox = Hive.openBox(AccessTokenBox);
+  Future<Box<String>> _refreshTokenBox = Hive.openBox(RefreshTokenBox);
+  Stream<BoxEvent> currentUserBoxStream;
 
   AuthBloc() {
-    _initBoxes().then((_){
-      final User savedUser = _currentUserBox.getAt(0);
-      if (savedUser != null) {
-        user$.add(savedUser);
-      }
-      _currentUserBoxStream = _currentUserBox.watch();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final User savedUser = (await _currentUserBox).getAt(0);
+    if (savedUser != null) {
+      user$.add(savedUser);
+    }
+    currentUserBoxStream = (await _currentUserBox).watch();
+
+    currentUserBoxStream.listen((BoxEvent event) {
+      user$.add(event.value);
     });
-    
-   _currentUserBoxStream.listen((BoxEvent event) {
-     user$.add(event.value);
-   });
-
   }
 
-  void addUser(User user) {
-    _currentUserBox.putAt(0, user);
+  Future<void> addUser(User user) async {
+    print(user);
+    (await _currentUserBox).putAt(0, user);
   }
 
-  void removeUser() {
-    _currentUserBox.delete(0);
+  Future<void> removeUser() async {
+    (await _currentUserBox).delete(0);
   }
 
-  void addAccessToken (String accessToken){
-      _accessTokenBox.putAt(0,accessToken);
+  Future<void> addAccessToken(String accessToken) async {
+    print(accessToken);
+    (await _accessTokenBox).putAt(0, accessToken);
   }
 
-  void addRefreshToken (String refreshToken) {
-      _refreshTokenBox.putAt(0,refreshToken);
-  }
-  void removeAccessToken (){
-      _accessTokenBox.deleteAt(0);
+  Future<void> addRefreshToken(String refreshToken) async {
+    print(refreshToken);
+    (await _refreshTokenBox).putAt(0, refreshToken);
   }
 
-  void removeRefreshToken () {
-      _refreshTokenBox.deleteAt(0);
+  Future<void> removeAccessToken() async {
+    (await _accessTokenBox).deleteAt(0);
   }
 
-  void dispose(){
+  Future<void> removeRefreshToken() async {
+    (await _refreshTokenBox).deleteAt(0);
+  }
+
+  Future<void> dispose() async {
     user$.close();
-    _accessTokenBox.close();
-    _refreshTokenBox.close();
-    _currentUserBox?.close();
+    (await _accessTokenBox).close();
+    (await _refreshTokenBox).close();
+    (await _currentUserBox).close();
   }
-
-
-  Future<void> _initBoxes() async {
-    _currentUserBox = await Hive.openBox(CurrentUserBox);
-    _accessTokenBox = await Hive.openBox(AccessTokenBox);
-    _refreshTokenBox = await Hive.openBox(RefreshTokenBox);
-  }
-
 }
