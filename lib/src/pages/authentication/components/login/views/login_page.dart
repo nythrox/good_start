@@ -5,6 +5,7 @@ import 'package:good_start/src/pages/authentication/components/login/blocs/login
 import 'package:good_start/src/pages/authentication/components/login/models/login_dto.dart';
 import 'package:good_start/src/pages/authentication/repositories/authentication_repository.dart';
 import 'package:good_start/src/pages/home/home_page.dart';
+import 'package:good_start/src/shared/bloc/auth_bloc.dart';
 import 'package:good_start/src/shared/components/button.dart';
 import 'package:good_start/src/shared/dio/custom_dio.dart';
 // import 'package:good_start/src/pages/login/login_bloc.dart';
@@ -20,24 +21,30 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // LoginBloc bloc = LoginBloc();
-  LoginStore loginStore = LoginStore(AuthenticationRepository(CustomDio([])));
+  LoginStore _loginStore = LoginStore(AuthenticationRepository(CustomDio([])));
   final formKey = GlobalKey<FormState>();
+  ReactionDisposer _disposer;
 
   @override
   void initState() {
     super.initState();
-    final disposer = autorun((_) {
-      if (loginStore.loginResponse.status == FutureStatus.fulfilled) {
+    _disposer = autorun((_) async {
+      if (_loginStore.loginResponse.status == FutureStatus.fulfilled) {
+        final authBloc = AuthBloc();
+        authBloc.addUser(_loginStore.loginResponse.value.user);
+        authBloc.addAccessToken(_loginStore.loginResponse.value.accessToken);
+        authBloc.addRefreshToken(_loginStore.loginResponse.value.refreshToken);
+        authBloc.dispose();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => HomePage()));
       }
-      if (loginStore.loginResponse.status == FutureStatus.rejected)
+      if (_loginStore.loginResponse.status == FutureStatus.rejected)
         showDialog(
             context: context,
             builder: (context) {
               String text =
                   "An unexpected error has occured. Please try again.";
-              if ((loginStore.loginResponse.error as DioError)
+              if ((_loginStore.loginResponse.error as DioError)
                       .response
                       .statusCode ==
                   400) text = "Email or password incorrect. Please try again.";
@@ -60,6 +67,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
+    _disposer();
+    _loginStore.dispose();
     super.dispose();
   }
 
@@ -89,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                 Text("Email", style: authenticationLabel),
                 TextFormField(
                   onSaved: (email) {
-                    loginStore.email = email.trim();
+                    _loginStore.email = email.trim();
                   },
                   validator: (email){
                     if (RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?").hasMatch(email))
@@ -110,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   obscureText: true,
                   onSaved: (password) {
-                    loginStore.password = password;
+                    _loginStore.password = password;
                   },
                   validator: (password){
                     if (password.length < 4)
@@ -123,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                       border: UnderlineInputBorder()),
                 ),
                 Observer(builder: (context) {
-                  if (loginStore.loginResponse?.status == FutureStatus.pending)
+                  if (_loginStore.loginResponse?.status == FutureStatus.pending)
                     return Container(
                         alignment: Alignment.center,
                         padding: EdgeInsets.all(10),
@@ -135,9 +144,9 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     if (formKey.currentState.validate()) {
                       formKey.currentState.save();
-                      loginStore.login(LoginDto(
-                          email: loginStore.email,
-                          password: loginStore.password));
+                      _loginStore.login(LoginDto(
+                          email: _loginStore.email,
+                          password: _loginStore.password));
                     }
                   },
                   width: MediaQuery.of(context).size.width,

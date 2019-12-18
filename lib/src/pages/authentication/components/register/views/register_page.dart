@@ -18,30 +18,32 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   // LoginBloc bloc = LoginBloc();
-  RegisterStore registerStore =
+  RegisterStore _registerStore =
       RegisterStore(AuthenticationRepository(CustomDio([])));
   final formKey = GlobalKey<FormState>();
+  ReactionDisposer _disposer;
 
   @override
   void initState() {
     super.initState();
-    final disposer = autorun((_) {
-      if (registerStore.registerResponse.status == FutureStatus.fulfilled) {
+    _disposer = autorun((_) {
+      if (_registerStore.registerResponse.status == FutureStatus.fulfilled) {
         final authBloc = AuthBloc();
-        var registerResponse;
-        authBloc.addUser(registerResponse.value.user);
+        authBloc.addUser(_registerStore.registerResponse.value.user);
+        authBloc.addAccessToken(_registerStore.registerResponse.value.accessToken);
+        authBloc.addRefreshToken(_registerStore.registerResponse.value.refreshToken);
         authBloc.dispose();
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => HomePage()));
       }
-      if (registerStore.registerResponse.status == FutureStatus.rejected)
+      if (_registerStore.registerResponse.status == FutureStatus.rejected)
         showDialog(
             context: context,
             builder: (context) {
               String text =
                   "Ocorreu um erro inesperado. Por favor, tente novamente.";
-              if (registerStore.registerResponse.error is AuthException) {
-                text = registerStore.registerResponse.error.message;
+              if (_registerStore.registerResponse.error is AuthException) {
+                text = _registerStore.registerResponse.error.message;
               }
               return AlertDialog(
                 title: Text("Erro"),
@@ -62,6 +64,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
+    _disposer();
+    _registerStore.dispose();
     super.dispose();
   }
 
@@ -90,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Text("Nome", style: authenticationLabel),
               TextFormField(
                 onSaved: (name) {
-                  registerStore.name = name.trim();
+                  _registerStore.name = name.trim();
                 },
                 validator: (name) {
                   if (name.length < 3)
@@ -106,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Text("Email", style: authenticationLabel),
               TextFormField(
                 onSaved: (email) {
-                  registerStore.email = email.trim();
+                  _registerStore.email = email.trim();
                 },
                 validator: (email) {
                   if (RegExp(
@@ -129,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
               TextFormField(
                 obscureText: true,
                 onSaved: (password) {
-                  registerStore.password = password;
+                  _registerStore.password = password;
                 },
                 validator: (password) {
                   if (password.length < 4)
@@ -142,7 +146,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     border: UnderlineInputBorder()),
               ),
               Observer(builder: (context) {
-                if (registerStore.registerResponse?.status ==
+                if (_registerStore.registerResponse?.status ==
                     FutureStatus.pending)
                   return Container(
                       alignment: Alignment.center,
@@ -155,10 +159,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 onPressed: () {
                   if (formKey.currentState.validate()) {
                     formKey.currentState.save();
-                    registerStore.register(RegisterDto(
-                        name: registerStore.name,
-                        email: registerStore.email,
-                        password: registerStore.password));
+                    _registerStore.register(RegisterDto(
+                        name: _registerStore.name,
+                        email: _registerStore.email,
+                        password: _registerStore.password));
                   }
                 },
                 width: MediaQuery.of(context).size.width,

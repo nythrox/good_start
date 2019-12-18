@@ -28,20 +28,6 @@ abstract class _LoginStore with Store {
   @action
   Future<void> login(LoginDto loginDto) async {
     loginResponse = ObservableFuture(_authenticationRepository.login(loginDto));
-    // loginResponse.then((e){});
-    when((_) => loginResponse.value != null, () async {
-      final Box<String> accessTokenBox = await Hive.openBox(AccessTokenBox);
-      final Box<String> refreshTokenBox = await Hive.openBox(RefreshTokenBox);
-      final Box<User> currentUserBox = await Hive.openBox(CurrentUserBox);
-      currentUserBox.putAt(0, loginResponse.value.user);
-      accessTokenBox.putAt(0,loginResponse.value.accessToken);
-      refreshTokenBox.putAt(0,loginResponse.value.refreshToken);
-      currentUserBox.close();
-      accessTokenBox.close();
-      refreshTokenBox.close();
-    });
-    
-    
   }
 
 }
