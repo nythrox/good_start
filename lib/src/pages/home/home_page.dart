@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:good_start/src/pages/authentication/authentication_page.dart';
 import 'package:good_start/src/pages/modules/modules_page.dart';
 import 'package:good_start/src/shared/styles/style.dart';
 

@@ -1,4 +1,4 @@
-#Sun Dec 15 14:14:10 BRST 2019
+#Tue Dec 17 05:30:57 BRST 2019
 base.0=C\:\\Users\\Jason\\Documents\\GitHub\\good_start\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
 path.0=classes.dex
 renamed.0=classes.dex

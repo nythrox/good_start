@@ -1,18 +1,28 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:good_start/src/shared/dio/exceptions/session_expired_exception.dart';
+import 'package:good_start/src/shared/utils/constants/hive_constants.dart';
+import 'package:hive/hive.dart';
 
 class AuthrizationInterceptor extends Interceptor {
   @override
   Future<Options> onRequest(RequestOptions options) async {
-    const String jwtAccessToken = "asdfgrwr245gerwasd.2ewdefr452rewrfsfewfeFEefeSDADSa.SDAEDWFSsdasd";
-    const String jwtRefreshToken = "2ewdefr452rewrfsfewfeFEefeSDADSa.2ewdefr452rewrfsfewfeFEefeSDADSa.2ewdefr452rewrfsfewfeFEefeSDADSa";
-    final Map<String, dynamic> payload =
-        base64ToJson(jwtAccessToken.split('.')[0]);
-    if (isJwtExpired(payload['exp'])) {
+    final accessTokenBox = await Hive.openBox(AccessTokenBox);
+
+    String jwtAccessToken = accessTokenBox.getAt(0);
+
+    final Map<String, dynamic> accessTokenPayload = base64ToJson(jwtAccessToken.split('.')[0]);
+
+    if (isJwtExpired(accessTokenPayload['exp'])) {
+      final refreshTokenBox = await Hive.openBox(RefreshTokenBox);
+      String jwtRefreshToken = refreshTokenBox.getAt(0);
       final newAccessToken = await getNewAuthToken(jwtRefreshToken);
+      refreshTokenBox.close();
       return options..headers["Authorization"] = "Bearer $newAccessToken";
     }
+
+    accessTokenBox.close();
     return options;
   }
 
@@ -24,7 +34,7 @@ class AuthrizationInterceptor extends Interceptor {
       final String accessToken = response.data["accessToken"];
       return accessToken;
     } catch (e) {
-      throw new Exception("Refresh Token failed. Please autheticate again.");
+      throw SessionExpiredException();
     }
   }
 

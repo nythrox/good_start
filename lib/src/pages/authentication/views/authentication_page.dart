@@ -1,10 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:good_start/src/pages/authentication/components/login/views/login_page.dart';
+import 'package:good_start/src/pages/authentication/components/register/views/register_page.dart';
+import 'package:good_start/src/shared/components/button.dart';
 // import 'package:good_start/src/pages/authentication/authentication_page_bloc.dart';
-import 'package:good_start/src/pages/login/login_page.dart';
 // import 'package:good_start/src/pages/register/register_page.dart';
 // import 'package:good_start/src/shared/components/fullwidth_border_button.dart';
 // import 'package:good_start/src/shared/components/fullwidth_button.dart';
 import 'package:good_start/src/shared/styles/style.dart';
+
 
 class AuthenticationPage extends StatefulWidget {
   @override
@@ -24,13 +28,14 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage("lib/assets/images/wallpaper1.jpg"),fit: BoxFit.cover),
-        color: Colors.purple
-      ),
+          image: DecorationImage(
+              image: AssetImage("lib/assets/images/wallpaper1.jpg"),
+              fit: BoxFit.cover),
+          color: Colors.purple),
       child: PageView(
         // controller: bloc.pageController,
         children: <Widget>[
-          // RegisterPage(),
+          RegisterPage(),
           // AuthenticationHome(bloc: bloc),
           AuthenticationHome(),
           LoginPage()
@@ -77,29 +82,34 @@ class AuthenticationHome extends StatelessWidget {
               ),
               Column(
                 children: <Widget>[
-                  // FullwidthBorderButton(
-                  //   color: Colors.white,
-                  //   child: Text("REGISTRAR",
-                  //       style: TextStyle(color: Colors.white, fontSize: 18)),
-                  //   onPressed: () {
-                  //     bloc.pageController.animateToPage(0,
-                  //         duration: Duration(milliseconds: 300),
-                  //         curve: Curves.easeOut);
-                  //   },
-                  // ),
+                  Button(
+                    borderColor: Colors.white,
+                    width: MediaQuery.of(context).size.width,
+                    child: Text("REGISTRAR",
+                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                    borderRadius: 30,
+                    highlightBorderColor: Colors.white,
+                    onPressed: () {
+                      // bloc.pageController.animateToPage(0,
+                      //     duration: Duration(milliseconds: 300),
+                      //     curve: Curves.easeOut);
+                    },
+                  ),
                   SizedBox(
                     height: 20,
                   ),
-                  // FullwidthButton(
-                  //   color: Colors.white,
-                  //   onPressed: () {
-                  //     bloc.pageController.animateToPage(2,
-                  //         duration: Duration(milliseconds: 300),
-                  //         curve: Curves.easeOut);
-                  //   },
-                  //   child: Text("LOGIN",
-                  //       style: TextStyle(color: Colors.red, fontSize: 18)),
-                  // ),
+                  Button(
+                    color: Colors.white,
+                    width: MediaQuery.of(context).size.width,
+                    borderRadius: 30,
+                    onPressed: () {
+                      // bloc.pageController.animateToPage(2,
+                      //     duration: Duration(milliseconds: 300),
+                      //     curve: Curves.easeOut);
+                    },
+                    child: Text("LOGIN",
+                        style: TextStyle(color: Colors.red, fontSize: 18)),
+                  ),
                 ],
               ),
             ],
