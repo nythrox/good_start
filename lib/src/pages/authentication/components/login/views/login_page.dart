@@ -33,7 +33,10 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _disposer = autorun((_) {
       if (_loginStore.loginResponse.status == FutureStatus.fulfilled) {
-        onSuccess();
+        authBloc.login(
+            _loginStore.loginResponse.value.user,
+            _loginStore.loginResponse.value.accessToken,
+            _loginStore.loginResponse.value.refreshToken);
       }
       if (_loginStore.loginResponse.status == FutureStatus.rejected)
         showDialog(
@@ -63,15 +66,6 @@ class _LoginPageState extends State<LoginPage> {
               );
             });
     });
-  }
-
-  void onSuccess() {
-    authBloc
-      ..addUser(_loginStore.loginResponse.value.user)
-      ..addAccessToken(_loginStore.loginResponse.value.accessToken)
-      ..addRefreshToken(_loginStore.loginResponse.value.refreshToken);
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => HomePage()));
   }
 
   @override

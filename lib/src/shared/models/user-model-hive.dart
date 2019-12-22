@@ -34,16 +34,16 @@ class User extends HiveObject {
 
 
     factory User.fromJson(Map<String, dynamic> json) => User(
-        name: json["user_name"],
-        id: json["user_id"],
-        email: json["user_email"],
-        role: json["user_role"],
+        name: json["username"],
+        id: json["id"],
+        email: json["email"],
+        role: json["role"],
     );
 
     Map<String, dynamic> toJson() => {
-        "user_name": name,
-        "user_id": id,
-        "user_email": email,
-        "user_role": role,
+        "username": name,
+        "id": id,
+        "email": email,
+        "role": role,
     };
 }

@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:good_start/src/pages/modules/modules_page.dart';
+import 'package:good_start/src/shared/bloc/auth_bloc.dart';
 import 'package:good_start/src/shared/styles/style.dart';
 
 class HomePage extends StatelessWidget {
+  final AuthBloc authBloc = AuthBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +16,14 @@ class HomePage extends StatelessWidget {
         endDrawer: Drawer(
           child: ListView(
             children: <Widget>[
-              ListTile(title: Text("Logout"),onTap: (){
-                // Navigator.replaceRouteBelow(context,anchorRoute: MaterialPageRoute(builder: (context)=>HomePage()),newRoute: MaterialPageRoute(builder: (context)=>AuthenticationPage()));
-              },)
+              ListTile(
+                title: Text("Logout"),
+                onTap: () {
+
+                  authBloc.logout();
+                  // Navigator.replaceRouteBelow(context,anchorRoute: MaterialPageRoute(builder: (context)=>HomePage()),newRoute: MaterialPageRoute(builder: (context)=>AuthenticationPage()));
+                },
+              )
             ],
           ),
         ),
@@ -57,17 +64,13 @@ class HomePage extends StatelessWidget {
 }
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({
-    Key key
-  }) : super(key: key);
-
+  const CustomAppBar({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      padding:
-          const EdgeInsets.only(left: 20.0, right: 20),
+      padding: const EdgeInsets.only(left: 20.0, right: 20),
       decoration: BoxDecoration(color: Color(0xffFFFAFA), boxShadow: [
         BoxShadow(
             color: Color.fromRGBO(150, 15, 15, 0.05),
@@ -85,25 +88,30 @@ class CustomAppBar extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Text("goodstart ",
-                        style:
-                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  Image.asset("lib/assets/images/apple-emoji.png",height:20),
-                  SizedBox(width: 3),
-                  Image.asset("lib/assets/images/clapping-hands-emoji.png",height:20),
-                  SizedBox(width: 3),
-                  Image.asset("lib/assets/images/books-emoji.png",height:20)
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    Image.asset("lib/assets/images/apple-emoji.png",
+                        height: 20),
+                    SizedBox(width: 3),
+                    Image.asset("lib/assets/images/clapping-hands-emoji.png",
+                        height: 20),
+                    SizedBox(width: 3),
+                    Image.asset("lib/assets/images/books-emoji.png", height: 20)
                   ],
                 ),
                 Text(
                   "módulos",
                   style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
-                SizedBox(height: 5,)
+                SizedBox(
+                  height: 5,
+                )
               ],
             ),
             ClipRRect(
               borderRadius: BorderRadius.circular(100),
-              child: Material( //for some reason only material is printing it square
+              child: Material(
+                //for some reason only material is printing it square
                 child: IconButton(
                   icon: Icon(Icons.menu, size: 30),
                   onPressed: () {
@@ -120,9 +128,7 @@ class CustomAppBar extends StatelessWidget {
 }
 
 class HomePageWidget extends StatelessWidget {
-  const HomePageWidget({
-    Key key
-  }) : super(key: key);
+  const HomePageWidget({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
