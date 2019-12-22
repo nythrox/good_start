@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:good_start/src/pages/authentication/blocs/authenticationageBloc.dart';
 import 'package:good_start/src/pages/authentication/components/login/views/login_page.dart';
 import 'package:good_start/src/pages/authentication/components/register/views/register_page.dart';
 import 'package:good_start/src/shared/components/button.dart';
@@ -16,11 +17,11 @@ class AuthenticationPage extends StatefulWidget {
 }
 
 class _AuthenticationPageState extends State<AuthenticationPage> {
-  // AuthenticationPageBloc bloc = AuthenticationPageBloc();
+  AuthenticationPageBloc bloc = AuthenticationPageBloc();
 
   @override
   void dispose() {
-    // bloc.dispose();
+    bloc.dispose();
     super.dispose();
   }
 
@@ -33,11 +34,11 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
               fit: BoxFit.cover),
           color: Colors.purple),
       child: PageView(
-        // controller: bloc.pageController,
+        controller: bloc.pageController,
         children: <Widget>[
           RegisterPage(),
-          // AuthenticationHome(bloc: bloc),
-          AuthenticationHome(),
+          AuthenticationHome(bloc: bloc),
+          // AuthenticationHome(),
           LoginPage()
         ],
       ),
@@ -48,10 +49,10 @@ class _AuthenticationPageState extends State<AuthenticationPage> {
 class AuthenticationHome extends StatelessWidget {
   const AuthenticationHome({
     Key key,
-    // @required this.bloc,
+    @required this.bloc,
   }) : super(key: key);
 
-  // final AuthenticationPageBloc bloc;
+  final AuthenticationPageBloc bloc;
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +91,9 @@ class AuthenticationHome extends StatelessWidget {
                     borderRadius: 30,
                     highlightBorderColor: Colors.white,
                     onPressed: () {
-                      // bloc.pageController.animateToPage(0,
-                      //     duration: Duration(milliseconds: 300),
-                      //     curve: Curves.easeOut);
+                      bloc.pageController.animateToPage(0,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeOut);
                     },
                   ),
                   SizedBox(
@@ -103,9 +104,9 @@ class AuthenticationHome extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     borderRadius: 30,
                     onPressed: () {
-                      // bloc.pageController.animateToPage(2,
-                      //     duration: Duration(milliseconds: 300),
-                      //     curve: Curves.easeOut);
+                      bloc.pageController.animateToPage(2,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeOut);
                     },
                     child: Text("LOGIN",
                         style: TextStyle(color: Colors.red, fontSize: 18)),
