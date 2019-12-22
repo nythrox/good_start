@@ -1,9 +1,10 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:good_start/src/shared/models/user-model-hive.dart';
 import 'package:good_start/src/shared/utils/constants/hive_constants.dart';
 import 'package:hive/hive.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AuthBloc {
+class AuthBloc extends BlocBase{
   final user$ = BehaviorSubject<User>();
 
   Future<Box<User>> _currentUserBox = Hive.openBox(CurrentUserBox);
@@ -54,6 +55,7 @@ class AuthBloc {
     (await _refreshTokenBox).deleteAt(0);
   }
 
+  @override
   Future<void> dispose() async {
     user$.close();
     (await _accessTokenBox).close();

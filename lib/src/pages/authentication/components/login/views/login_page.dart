@@ -1,3 +1,4 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -21,10 +22,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // LoginBloc bloc = LoginBloc();
-  LoginStore _loginStore = LoginStore(AuthenticationRepository(CustomDio([])));
+  final LoginStore _loginStore =
+      LoginStore(AuthenticationRepository(CustomDio([])));
   final formKey = GlobalKey<FormState>();
   ReactionDisposer _disposer;
+  final AuthBloc authBloc = BlocProvider.getBloc<AuthBloc>();
 
   @override
   void initState() {
@@ -63,12 +65,11 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void onSuccess() async {
-    final authBloc = AuthBloc();
-    await authBloc.addUser(_loginStore.loginResponse.value.user);
-    await authBloc.addAccessToken(_loginStore.loginResponse.value.accessToken);
-    await authBloc
-        .addRefreshToken(_loginStore.loginResponse.value.refreshToken);
+  void onSuccess() {
+    authBloc
+      ..addUser(_loginStore.loginResponse.value.user)
+      ..addAccessToken(_loginStore.loginResponse.value.accessToken)
+      ..addRefreshToken(_loginStore.loginResponse.value.refreshToken);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => HomePage()));
   }

@@ -1,3 +1,4 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:good_start/src/pages/authentication/components/register/blocs/register_store.dart';
@@ -18,10 +19,11 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   // LoginBloc bloc = LoginBloc();
-  RegisterStore _registerStore =
+  final RegisterStore _registerStore =
       RegisterStore(AuthenticationRepository(CustomDio([])));
   final formKey = GlobalKey<FormState>();
   ReactionDisposer _disposer;
+  final AuthBloc authBloc = BlocProvider.getBloc<AuthBloc>();
 
   @override
   void initState() {
@@ -57,12 +59,11 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  void onSuccess() async {
-    final authBloc = AuthBloc();
-    await authBloc.addUser(_registerStore.registerResponse.value.user);
-    await authBloc.addAccessToken(_registerStore.registerResponse.value.accessToken);
-    await authBloc
-        .addRefreshToken(_registerStore.registerResponse.value.refreshToken);
+  void onSuccess() {
+    authBloc
+      ..addUser(_registerStore.registerResponse.value.user)
+      ..addAccessToken(_registerStore.registerResponse.value.accessToken)
+      ..addRefreshToken(_registerStore.registerResponse.value.refreshToken);
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => HomePage()));
   }
